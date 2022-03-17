@@ -8,7 +8,6 @@ jobs:
   build-and-deploy:
     docker:
       - image: "cimg/python:3.9.1"
-    machine: true
     steps:
       - aws-ecr/ecr-login:
           registry-id: AWS_ECR_REPOSITORY_REGISTRY_ID
