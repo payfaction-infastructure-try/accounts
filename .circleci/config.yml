@@ -6,8 +6,8 @@ orbs:
 
 jobs:
   build-and-deploy:
-    # docker:
-    #   - image: 'cimg/python:3.9.1' 
+    docker:
+      - image: "cimg/python:3.9.1"
     machine: true
     steps:
       - aws-ecr/ecr-login:
@@ -61,11 +61,13 @@ workflows:
             branches:
               only:
                 - develop
-      # - build-and-deploy:
-      #     context:
-      #       - aws-payfaction-prod
-      #       - accounts-prod
-      #     filters:
-      #       branches:
-      #         only:
-      #           - master
+      - build-and-deploy:
+          context:
+            # - aws-payfaction-prod
+            # - accounts-prod
+            - aws-payfaction-dev
+            - accounts-dev
+          filters:
+            branches:
+              only:
+                - master
