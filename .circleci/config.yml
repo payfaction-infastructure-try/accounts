@@ -1,6 +1,7 @@
 version: 2.1
 orbs:
-  aws-ecr: circleci/aws-ecr@8.0.0
+  # aws-ecr: circleci/aws-ecr@8.0.0
+  aws-ecr: circleci/aws-ecr@6.15.1
   aws-ecs: circleci/aws-ecs@2.0.0
   aws-cli: circleci/aws-cli@2.1.0
 
@@ -9,20 +10,29 @@ jobs:
     docker:
       - image: "circleci/python:2.7"
     steps:
+      - aws-ecr/build-and-push-image:
+          account-url: AWS_ECR_REPOSITORY_URL
+          # aws-access-key-id: AWS_ACCESS_KEY_ID
+          # aws-secret-access-key: AWS_SECRET_ACCESS_KEY
+          # dockerfile: Dockerfile
+          # path: .
+          region: AWS_DEFAULT_REGION
+          repo: "${AWS_RESOURCE_NAME_PREFIX}"
+          tag: "${CIRCLE_SHA1}"
       # - checkout
       # - setup_remote_docker:
       #     docker_layer_caching: true
-      - aws-ecr/ecr-login:
-          registry-id: AWS_ECR_REPOSITORY_REGISTRY_ID
-          region: "${AWS_DEFAULT_REGION}"
-      - aws-ecr/build-image:
-          registry-id: AWS_ECR_REPOSITORY_URL
-          repo: "${AWS_RESOURCE_NAME_PREFIX}"
-          region: "${AWS_DEFAULT_REGION}"
-          tag: "${CIRCLE_SHA1}"
-          dockerfile: Dockerfile
-          path: .
-          push-image: true
+      # - aws-ecr/ecr-login:
+      #     registry-id: AWS_ECR_REPOSITORY_REGISTRY_ID
+      #     region: "${AWS_DEFAULT_REGION}"
+      # - aws-ecr/build-image:
+      #     registry-id: AWS_ECR_REPOSITORY_URL
+      #     repo: "${AWS_RESOURCE_NAME_PREFIX}"
+      #     region: "${AWS_DEFAULT_REGION}"
+      #     tag: "${CIRCLE_SHA1}"
+      #     dockerfile: Dockerfile
+      #     path: .
+      #     push-image: true
       - aws-ecs/update-service:
           container-env-var-updates: container=${AWS_RESOURCE_NAME_PREFIX}-service,name="TEXT",value="${TEXT}"
           family: "${AWS_RESOURCE_NAME_PREFIX}-service"
