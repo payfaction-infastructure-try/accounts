@@ -6,7 +6,7 @@ orbs:
   aws-cli: circleci/aws-cli@2.1.0
 
 jobs:
-  build-and-deploy:
+  build:
     machine: true 
     steps:
       - aws-ecr/build-and-push-image:
@@ -32,6 +32,9 @@ jobs:
       #     dockerfile: Dockerfile
       #     path: .
       #     push-image: true
+  deploy:
+    machine: true 
+    steps:
       - aws-ecs/update-service:
           container-env-var-updates: container=${AWS_RESOURCE_NAME_PREFIX}-service,name="TEXT",value="${TEXT}"
           family: "${AWS_RESOURCE_NAME_PREFIX}-service"
@@ -66,7 +69,7 @@ jobs:
 workflows:
   build-and-deploy:
     jobs:
-      - build-and-deploy:
+      - build:
           context:
             - aws-payfaction-dev
             - aws-resources-payfaction-dev
@@ -75,7 +78,27 @@ workflows:
             branches:
               only:
                 - develop
-      - build-and-deploy:
+      - deploy:
+          context:
+            - aws-payfaction-dev
+            - aws-resources-payfaction-dev
+            - accounts-dev
+          filters:
+            branches:
+              only:
+                - develop
+      - build:
+          context:
+            # - aws-payfaction-prod
+            # - accounts-prod
+            - aws-payfaction-dev
+            - aws-resources-payfaction-dev
+            - accounts-dev
+          filters:
+            branches:
+              only:
+                - master
+      - deploy:
           context:
             # - aws-payfaction-prod
             # - accounts-prod
