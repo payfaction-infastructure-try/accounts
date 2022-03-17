@@ -7,13 +7,8 @@ orbs:
 
 jobs:
   build:
-    docker:
-      - image: 'cimg/python:3.9.1'
+    machine: true 
     steps:
-      - aws-cli/setup:
-          aws-access-key-id: AWS_SECRET_ACCESS_KEY
-          aws-region: AWS_DEFAULT_REGION
-          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
       - aws-ecr/build-and-push-image:
           account-url: AWS_ECR_REPOSITORY_URL
           # aws-access-key-id: AWS_ACCESS_KEY_ID
@@ -38,8 +33,13 @@ jobs:
       #     path: .
       #     push-image: true
   deploy:
-    machine: true 
-    steps:
+     docker:
+      - image: 'cimg/python:3.9.1'
+     steps:
+      - aws-cli/setup:
+          aws-access-key-id: AWS_SECRET_ACCESS_KEY
+          aws-region: AWS_DEFAULT_REGION
+          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
       - aws-ecs/update-service:
           container-env-var-updates: container=${AWS_RESOURCE_NAME_PREFIX}-service,name="TEXT",value="${TEXT}"
           family: "${AWS_RESOURCE_NAME_PREFIX}-service"
