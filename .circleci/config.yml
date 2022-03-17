@@ -6,8 +6,12 @@ orbs:
 
 jobs:
   build-and-deploy:
-    machine: true
+    docker:
+      - image: "cimg/python:3.9.1"
     steps:
+      - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
       - aws-ecr/ecr-login:
           registry-id: AWS_ECR_REPOSITORY_REGISTRY_ID
           region: "${AWS_DEFAULT_REGION}"
