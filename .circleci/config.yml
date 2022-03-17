@@ -11,11 +11,11 @@ jobs:
     steps:
       - aws-ecr/ecr-login:
           registry-id: AWS_ECR_REPOSITORY_REGISTRY_ID
-          region: AWS_DEFAULT_REGION
+          region: "${AWS_DEFAULT_REGION}"
       - aws-ecr/build-image:
           registry-id: AWS_ECR_REPOSITORY_URL
           repo: "${AWS_RESOURCE_NAME_PREFIX}"
-          region: AWS_DEFAULT_REGION
+          region: "${AWS_DEFAULT_REGION}"
           tag: "${CIRCLE_SHA1}"
           push-image: true
       - aws-ecs/update-service:
