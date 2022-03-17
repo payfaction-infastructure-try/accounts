@@ -9,9 +9,9 @@ jobs:
     docker:
       - image: "circleci/python:2.7"
     steps:
-      - checkout
-      - setup_remote_docker:
-          docker_layer_caching: true
+      # - checkout
+      # - setup_remote_docker:
+      #     docker_layer_caching: true
       - aws-ecr/ecr-login:
           registry-id: AWS_ECR_REPOSITORY_REGISTRY_ID
           region: "${AWS_DEFAULT_REGION}"
