@@ -41,7 +41,7 @@ jobs:
       - run:
           name: Test deployment (Please manually tear down AWS resources after use, if desired)
           command: |
-            TARGET_GROUP_ARN=$(aws ecs describe-services --cluster ${AWS_RESOURCE_NAME_PREFIX}-cluster --services ${AWS_RESOURCE_NAME_PREFIX}-service | jq -r '.services[0].loadBalancers[0].targetGroupArn')
+            TARGET_GROUP_ARN=$(aws ecs describe-services --cluster ${AWS_ECS_CLUSTER_NAME_PREFIX}-cluster --services ${AWS_RESOURCE_NAME_PREFIX}-service | jq -r '.services[0].loadBalancers[0].targetGroupArn')
             ELB_ARN=$(aws elbv2 describe-target-groups --target-group-arns $TARGET_GROUP_ARN | jq -r '.TargetGroups[0].LoadBalancerArns[0]')
             ELB_DNS_NAME=$(aws elbv2 describe-load-balancers --load-balancer-arns $ELB_ARN | jq -r '.LoadBalancers[0].DNSName')
             curl -s -o --retry 10 /dev/null -w '%{http_code}' http://$ELB_DNS_NAME | grep 200
@@ -69,6 +69,7 @@ workflows:
       - build-and-deploy:
           context:
             - aws-payfaction-dev
+            - aws-resources-payfaction-dev
             - accounts-dev
           filters:
             branches:
@@ -79,6 +80,7 @@ workflows:
             # - aws-payfaction-prod
             # - accounts-prod
             - aws-payfaction-dev
+            - aws-resources-payfaction-dev
             - accounts-dev
           filters:
             branches:
