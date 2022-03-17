@@ -17,6 +17,8 @@ jobs:
           repo: "${AWS_RESOURCE_NAME_PREFIX}"
           region: "${AWS_DEFAULT_REGION}"
           tag: "${CIRCLE_SHA1}"
+          dockerfile: Dockerfile
+          path: .
           push-image: true
       - aws-ecs/update-service:
           container-env-var-updates: container=${AWS_RESOURCE_NAME_PREFIX}-service,name="TEXT",value="${TEXT}"
